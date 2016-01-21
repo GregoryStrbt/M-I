@@ -1,0 +1,35 @@
+.login-form {
+    text-align: center;
+    width: 80%;
+    margin: 60px auto 0;
+}
+
+input[type=email], input[type=password], input[type=text], input[type=date] {
+    display: block;
+    width: 100%;
+    margin: 0 auto;
+    outline: none;
+    padding-top: 24px;
+    padding-bottom: 24px;
+}
+
+input[type=number]{
+    width: 100%;
+}
+
+.login-button {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.forgot-password {
+    display: block;
+    margin: 8px auto 0 auto;
+    font-size: 14px;
+}
+table{
+    width: 80%;
+}
+tr, td{
+    border: 1px solid;
+}

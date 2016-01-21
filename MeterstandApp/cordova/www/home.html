@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app" ng-csp>
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- JS dependencies (order matters!) -->
+    <script src="scripts/platformOverrides.js"></script>
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/onsen/js/onsenui.js"></script>
+    <script src="lib/jquery/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="lib/fusioncharts/js/fusioncharts.js"></script>
+    <script type="text/javascript" src="lib/fusioncharts/js/themes/fusioncharts.theme.fint.js"></script>
+  
+    <!-- CSS dependencies -->
+    <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
+    <link rel="stylesheet" href="lib/onsen/css/onsen-css-components-sunshine-theme.css" />
+    <link rel="stylesheet" href="login.css">
+
+
+    <!-- CSP support mode (required for Windows Universal apps) -->
+    <link rel="stylesheet" href="lib/angular/angular-csp.css" />
+
+
+    <!-- --------------- Script--------------- -->
+
+    <script src="scripts/apiInteractie.js"></script>
+    <title>Onsen UI Sliding Menu</title>
+
+    <script>
+        angular.module('app', ['onsen']);
+
+        $(document).on('swipeleft', '#detect-area', function() {
+            console.log('Swipe left is detected.');
+            window.location.replace('login.html');
+        })
+    </script>
+
+
+    <script type="text/javascript">
+        FusionCharts.ready(function(){
+            var revenueChart = new FusionCharts({
+                "type": "column2d",
+                "renderAt": "chartContainer",
+                "width": "500",
+                "height": "300",
+                "dataFormat": "json",
+                "dataSource":  {
+                    "chart": {
+                        "caption": "Monthly revenue for last year",
+                        "subCaption": "Harry's SuperMart",
+                        "xAxisName": "Month",
+                        "yAxisName": "Revenues (In USD)",
+                        "theme": "fint"
+                    },
+                    "data": [
+                        {
+                            "label": "Jan",
+                            "value": "420000"
+                        },
+                        {
+                            "label": "Feb",
+                            "value": "810000"
+                        },
+                        {
+                            "label": "Mar",
+                            "value": "720000"
+                        },
+                        {
+                            "label": "Apr",
+                            "value": "550000"
+                        },
+                        {
+                            "label": "May",
+                            "value": "910000"
+                        },
+                        {
+                            "label": "Jun",
+                            "value": "510000"
+                        },
+                        {
+                            "label": "Jul",
+                            "value": "680000"
+                        },
+                        {
+                            "label": "Aug",
+                            "value": "620000"
+                        },
+                        {
+                            "label": "Sep",
+                            "value": "610000"
+                        },
+                        {
+                            "label": "Oct",
+                            "value": "490000"
+                        },
+                        {
+                            "label": "Nov",
+                            "value": "900000"
+                        },
+                        {
+                            "label": "Dec",
+                            "value": "730000"
+                        }
+                    ]
+                }
+
+            });
+            revenueChart.render();
+        })
+    </script>
+    <style>
+        .page--menu-page__background {
+            background-color: #333;
+        }
+
+        .page--menu-page__content {
+            color: white;
+        }
+
+        .menu-close,
+        .menu-close > .toolbar-button {
+            color: #999;
+        }
+
+        .menu-list,
+        .menu-item:first-child,
+        .menu-item:last-child,
+        .menu-item {
+            background-color: transparent;
+            background-image: none !important;
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .menu-item {
+            padding: 0 0 0 20px;
+            line-height: 52px;
+            height: 52px;
+            text-shadow: rgba(0, 0, 0, 0.4) 0px 1px 0px;
+        }
+
+            .menu-item:active {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+
+        .menu-notification {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 14px;
+            height: 16px;
+            line-height: 16px;
+            min-width: 16px;
+            font-weight: 600;
+        }
+
+        .bottom-menu-list,
+        .bottom-menu-item:first-child,
+        .bottom-menu-item:last-child,
+        .bottom-menu-item {
+            border-color: #393939;
+            background-color: transparent;
+            background-image: none !important;
+            color: #ccc;
+        }
+
+            .bottom-menu-item:active {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+    </style>
+
+</head>
+
+<body>
+    <!-- Cordova reference -->
+    <script src="cordova.js"></script>
+    <script src="scripts/index.js"></script>
+    <!-- -->
+
+<ons-tabbar>
+    <ons-tab page="thuis.html" label="Home" icon="ion-home" active="true"></ons-tab>
+    <ons-tab page="geschiedenis.html" label="Geschiedenis" icon="ion-compass"></ons-tab>
+    <ons-tab page="help.html" label="Help" icon="ion-ios-help"></ons-tab>
+    <ons-tab page="settings.html" label="Settings" icon="ion-ios-cog"></ons-tab>
+</ons-tabbar>
+
+    <ons-template id="thuis.html">
+        <ons-page>
+            <ons-toolbar>
+
+                <div class="center">Gas-O-Meter</div>
+            </ons-toolbar>
+            <br>
+            <p>Meterstand ingeven:</p>
+            
+            <div style="padding: 20px 15px; text-align: center">
+        <input id="meterstand" type="number" class="text-input--underbar" placeholder="Meterstand" value="" required="required">
+        <input id="datum" type="date" class="text-input--underbar" placeholder="Datum" value="" required="required">
+        <br><br>
+                <div class="vspc form-row" style="padding: 20px 15px">
+                    <ons-button modifier="large--cta" class="login-button" onclick="setGegevens()">Geef meterstand in</ons-button>
+                </div>
+
+
+
+        </div>
+
+
+            </div>
+            <div id="chartContainer">FusionCharts XT will load here!</div>
+        </ons-page>
+    </ons-template>
+
+
+<!--
+   <ons-template id="data.html">
+        <ons-page>
+            <ons-toolbar>
+
+                <div class="center">Page 2</div>
+            </ons-toolbar>
+
+
+            <ons-row style="margin-top: 100px; text-align: center;">
+                <ons-col>
+
+
+                    <div id="alert" style="color:red">
+
+                    </div><br>
+
+                    <span class="knop" onclick="getApiTijd();">Test servertijd</span>
+
+                    <ons-button onclick="getApiTijd()" class="button button--large--outline">
+                        Geef Server Tijd
+                    </ons-button>
+                    <span class="knop" onclick="getApiProducten();">Test producten</span>
+                    <form>
+                        <label for="productnaam">Productnaam</label><input type="text" id="productnaam"><br>
+                        <label for="prijs">Prijs</label><input type="text" id="prijs">
+                    </form>
+                    <span class="knop" onclick="setProduct();">Invoeren Product</span>
+                </ons-col>
+            </ons-row>
+
+        </ons-page>
+    </ons-template>
+-->
+
+    <ons-template id="geschiedenis.html">
+        <ons-page>
+            <ons-toolbar>
+
+                <div class="center">Geschiedenis</div>
+
+
+            </ons-toolbar>
+            <ons-list>
+                <ul class="list">
+                    <li class="list__header">2015</li>
+                    <li class="list__item">Meterstand: xxxxxxx</li>
+                    <li class="list__header">2014</li>
+                    <li class="list__item">Meterstand: xxxxxxx</li>
+                </ul>
+            </ons-list>
+
+
+            <div class="vspc form-row" style="padding: 20px 15px">
+
+                <ons-button modifier="large--cta" class="login-button" onclick="getApiGegevens()">Get gegevens</ons-button>
+            </div>
+
+            <table id="GegevensLijst">
+
+            </table>
+
+
+            
+            
+            
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="help.html">
+        <ons-toolbar>
+
+            <div class="center">Send Message</div>
+
+
+        </ons-toolbar>
+
+        <ons-list modifier="inset" style="margin-top: 10px">
+
+            <ons-list-item>
+                <input type="text" class="text-input text-input--transparent" placeholder="E-mail" style="width: 100%">
+            </ons-list-item>
+
+            <ons-list-item>
+                <textarea class="textarea textarea--transparent" placeholder="Message" style="width: 100%; height: 100px;"></textarea>
+            </ons-list-item>
+
+
+        </ons-list>
+
+        <div style="padding: 10px 9px">
+            <ons-button modifier="large--cta" style="margin: 0 auto;">
+                Send
+            </ons-button>
+        </div>
+
+
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="settings.html">
+        <ons-toolbar>
+
+            <div class="center">Settings</div>
+
+
+        </ons-toolbar>
+
+        <ons-gesture-detector>
+            <div id="detect-area" style="width: 100px; height: 100px;">
+                Swipe Here
+            </div>
+        </ons-gesture-detector>
+
+        <div class="settings-header">Share</div>
+
+        <ons-list modifier="inset" class="settings-list">
+            <ons-list-item>
+                Twitter
+                <ons-switch modifier="list-item"></ons-switch>
+            </ons-list-item>
+
+            <ons-list-item>
+                Facebook
+                <ons-switch modifier="list-item" checked></ons-switch>
+            </ons-list-item>
+        </ons-list>
+
+        <div class="settings-header">Others</div>
+
+        <ons-list modifier="inset" class="settings-list">
+            <ons-list-item modifier="chevron">
+                Terms of Use
+            </ons-list-item>
+
+            <ons-list-item modifier="chevron">
+                Privacy Policy
+            </ons-list-item>
+        </ons-list>
+
+        <br>
+
+        <ons-list modifier="inset" class="settings-list">
+            <ons-list-item modifier="tappable" onclick="uitloggen()">
+                <ons-icon icon="ion-log-out" style="opacity: 0.8"></ons-icon>
+                Sign out
+            </ons-list-item>
+        </ons-list>
+
+
+    </ons-template>
+</body>
+</html>

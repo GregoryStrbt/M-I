@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app" ng-csp>
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- JS dependencies (order matters!) -->
+    <script src="scripts/platformOverrides.js"></script>
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/onsen/js/onsenui.js"></script>
+    <script src="lib/jquery/jquery-2.1.1.min.js"></script>
+
+    <!-- CSS dependencies -->
+    <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
+    <link rel="stylesheet" href="lib/onsen/css/onsen-css-components-sunshine-theme.css" />
+    <link rel="stylesheet" href="login.css">
+
+    <!-- CSP support mode (required for Windows Universal apps) -->
+    <link rel="stylesheet" href="lib/angular/angular-csp.css" />
+
+
+    <!-- --------------- Script--------------- -->
+
+    <script src="scripts/apiInteractie.js"></script>
+    <title>Onsen UI Sliding Menu</title>
+
+    <script>
+        ons.bootstrap();
+    </script>
+
+    <script>
+        angular.module('app', ['onsen']);
+    </script>
+
+</head>
+
+<body>
+<!-- Cordova reference -->
+<script src="cordova.js"></script>
+<script src="scripts/index.js"></script>
+
+<ons-navigator title="Navigator" var="myNavigator">
+  <ons-page>
+  <ons-toolbar>
+        <div class="center">Log In</div>
+        <div class="right"><ons-toolbar-button>Close</ons-toolbar-button></div>
+  </ons-toolbar>
+    <div style="text-align: center">
+      <br>
+        <div style="padding: 20px 15px">
+        <input id="login" type="email" class="text-input--underbar" placeholder="Email" value="">
+        <input id="pwd" type="password" class="text-input--underbar" placeholder="Password" value="" required="required">
+        <br><br>
+     
+        <ons-button modifier="large--cta" class="login-button" onclick="getApiGebruiker()">Log In</ons-button>
+        </div>
+        
+      <ons-button modifier="quiet" class="forgot-password" onclick="myNavigator.pushPage('registratie.html', {animation : 'slide' } )">No account? Register here!</ons-button>
+    </div>
+  </ons-page>
+</ons-navigator>
+
+<ons-template id="registratie.html">
+  <ons-page>
+    <ons-toolbar>
+      <div class="left">
+        <ons-back-button>Back</ons-back-button>
+      </div>
+      <div class="center">Sign up</div>
+    </ons-toolbar>
+
+    <div style="padding: 20px 15px">
+        <br />
+        
+        <input type="text" class="text-input text-input--underbar" placeholder="First name" value="" id="voornaam">
+        <input type="text" class="text-input text-input--underbar" placeholder="Last name" value="" id="achternaam">
+        <input type="text" class="text-input--underbar" placeholder="Email" value="" id="email">
+        <input type="password" class="text-input--underbar" placeholder="Password" value="" id="wachtwoord">
+        <br><br>
+            
+        <ons-button modifier="large--cta" class="login-button" onclick="NieuweGebruiker()">Sign up</ons-button>
+        <span id="notif"></span>
+        <br><br>
+            
+    </div>
+  </ons-page>
+</ons-template>
+</body>
+</html>
