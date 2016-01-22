@@ -217,7 +217,7 @@ if (strcasecmp($_GET['m'], 'login') == 0) {
         // de login nakijken
         // @FIXME : nakijken of hier niets moet gedaan worden met deze input : in welk formaat is dit?
         // vooral met speciale tekens zoals in Björn moet ik opletten (op deze server :-/)
-        $lQuery = "select * FROM Users where Email like '" . $_POST['name'] . "' and Wachtwoord like '" . $_POST['password'] . "'";
+        $lQuery = "select Wachtwoord FROM Users where Email like '" . $_POST['name'] . "' and Wachtwoord like '" . $_POST['password'] . "'";
         $result = $conn -> query($lQuery);
         $rows = array();
         if (!$result) {
@@ -228,9 +228,18 @@ if (strcasecmp($_GET['m'], 'login') == 0) {
                 $rows[] = $row;
             }
             if (count($rows) > 0) {
+                if(password_verify('random', $result)){
+
+
                 $response['code'] = 1;
                 $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
                 $response['data'] = $rows[0];
+            }
+            else{
+                $response['code'] = "4";
+                $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
+                $response['data'] = $api_response_code[$response['code']]['Message'];
+            }
             } else {
                 $response['code'] = "4";
                 $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
@@ -305,7 +314,10 @@ if (strcasecmp($_GET['m'], 'NieuweGebruiker') == 0) {
         
         $response['code'] = 1;
         $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-        $hashwachtwoord = password_hash($_POST['wachtwoord'] , PASSWORD_DEFAULT);
+        $hashwachtwoord = password_hash($_POST['wachtwoord'] , PASSWORD_DEFAULT, array(
+            'salt' => 'random',
+            'cost' => 10
+            ));
         $lQuery = "insert into Users(Naam, Achternaam, Email, Wachtwoord) values ('" . $_POST['voornaam'] . "','" . $_POST['achternaam'] . "','" . $_POST['email'] . "','" . $hashwachtwoord . "')";
         $conn -> query($lQuery);
             
