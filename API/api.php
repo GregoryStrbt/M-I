@@ -1,9 +1,5 @@
 <?php
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
-header('Access-Control-Max-Age: 1000');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-
 //
 // API Demo
 //
@@ -41,21 +37,19 @@ $response['code'] = 0;
 $response['status'] = 404;
 $response['data'] = NULL;
 
-// Define whether an HTTPS connection is required
-$HTTPS_required = FALSE;
 
-// Define whether user authentication is required
-$authentication_required = FALSE; // staat nu op false. Test dit eens met true, en geef de nodige login credentials mee
-
-// Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname) or die(mysqli_connect_error());
+$conn = new mysqli($servername, $username, $password, $dbname) or die(mysqli_connect_error());
 // de or die() kan vervangen worden door de juiste aanroep van deliver_response();
 // dit wordt later gedaan toch nog gedaan op de juiste plaatsen, dus we raken niet verder dan hier.
 // Dit treedt normaal enkel op wanneer dit niet nog niet juist is ingesteld.
 
 //require_once "functies.php";
 
-
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+    $response['code'] = 7;
+    $response['status'] = 404;
+}
 
 
 // --- Step 1: Initialize variables and functions
@@ -66,269 +60,127 @@ $conn = mysqli_connect($servername, $username, $password, $dbname) or die(mysqli
 // * @param string $api_response The desired HTTP response data
 // * @return void
 // **/
-function deliver_response($format, $api_response) {
+    function deliver_response($format, $api_response)
+    {
 
-    // Define HTTP responses
-    $http_response_code = array(200 => 'OK', 400 => 'Bad Request', 401 => 'Unauthorized', 403 => 'Forbidden', 404 => 'Not Found');
+        // Define HTTP responses
+        $http_response_code = array(200 => 'OK', 400 => 'Bad Request', 401 => 'Unauthorized', 403 => 'Forbidden', 404 => 'Not Found');
 
-    // Set HTTP Response
-    header('HTTP/1.1 ' . $api_response['status'] . ' ' . $http_response_code[$api_response['status']]);
-
-    // Process different content types
-    if (strcasecmp($format, 'json') == 0) {
-
-        // Set HTTP Response Content Type
+        // Set HTTP Response
+        header('HTTP/1.1 ' . $api_response['status'] . ' ' . $http_response_code[$api_response['status']]);
         header('Content-Type: application/json; charset=utf-8');
 
-        // Format data into a JSON response
         $json_response = json_encode($api_response);
-
-        // Deliver formatted data
         echo $json_response;
-
-    } elseif (strcasecmp($format, 'xml') == 0) {
-
-        // Set HTTP Response Content Type
-        header('Content-Type: application/xml; charset=utf-8');
-
-        // Format data into an XML response (This is only good at handling string data, not arrays)
-        $xml_response = '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<response>' . "\n" . "\t" . '<code>' . $api_response['code'] . '</code>' . "\n" . "\t" . '<data>' . $api_response['data'] . '</data>' . "\n" . '</response>';
-
-        // Deliver formatted data
-        echo $xml_response;
-
-    } else {
-
-        // Set HTTP Response Content Type (This is only good at handling string data, not arrays)
-        header('Content-Type: text/html; charset=utf-8');
-
-        // Deliver formatted data
-        echo $api_response['data'];
+        exit;
 
     }
 
-    // End script process
-    exit ;
-
-}
 
 
 
-// security issue : als de m = register, geen login nodig ...
-if (strcasecmp($_GET['m'], 'register') == 0) {
-    $authentication_required = FALSE;
-}
-if (strcasecmp($_GET['m'], 'hello') == 0) {
-    $authentication_required = FALSE; // om deze functie te testen is geen login nodig ...
-}
 
+    switch ($_GET['m'])
+    {
+            case 'login':
+            login($conn,$api_response_code);
 
+            break;
+            case 'getGegevens':
+            getGegevens($conn,$api_response_code);
+            break;
+            case 'setMeterstand':
+            setMeterstand($conn,$api_response_code);
+            break;
+            case 'NieuweGebruiker':
+            maakUser($conn,$api_response_code);
+            break;
 
-// --- Step 2: Authorization
-
-// Optionally require connections to be made via HTTPS
-if ($HTTPS_required && $_SERVER['HTTPS'] != 'on') {
-    $response['code'] = 2;
-    $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-    $response['data'] = $api_response_code[$response['code']]['Message'];
-
-    // Return Response to browser. This will exit the script.
-    deliver_response($_GET['format'], $response);
-}
-
-// Optionally require user authentication
-if ($authentication_required) {
-
-    if (empty($_POST['user']) || empty($_POST['password'])) {
-        $response['code'] = 3;
-        $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-        $response['data'] = $api_response_code[$response['code']]['Message'];
-
-        // Return Response to browser
-        deliver_response($_POST['format'], $response);
-
+            default:
+                # code...
+            break;
     }
 
-    // Return an error response if user fails authentication. This is a very simplistic example
-    // that should be modified for security in a production environment
-    else {
-
-        if (!$conn) {
-            $response['code'] = 7;
-            $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-            $response['data'] = mysqli_connect_error();
-
-            // Return Response to browser
-            deliver_response($_POST['format'], $response);
-
-        } else {
-            // de login nakijken
-            $lQuery = "select * FROM logins where NAAM like '" . $_POST['name'] . "' and PW like '" . $_POST['password'] . "'";
-            $result = $conn -> query($lQuery);
-            $rows = array();
-            if (!$result) {
-                $response['code'] = 7;
-                $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-                $response['data'] = mysqli_connect_error();
-
-                // Return Response to browser
-                deliver_response($_POST['format'], $response);
-            } else {
-                //$response['data'] = "ok";
-                while ($row = $result -> fetch_assoc()) {
-                    $rows[] = $row;
-                }
-                if (count($rows) == 0) {
-                    $response['code'] = 4;
-                    $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-                    $response['data'] = $api_response_code[$response['code']]['Message'];
-
-                    // Return Response to browser
-                    deliver_response($_POST['format'], $response);
-                }
-            }
-        }
-
-    }
-
-}
-
-// --- Step 3: Process Request
 
 
-// Method A: Say Hello to the API
-if (strcasecmp($_GET['m'], 'hello') == 0) {
+function maakUser($conn,$api_response_code)
+{
     $response['code'] = 1;
     $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-    $response['data'] = 'Hello World';
+    $hashwachtwoord = password_hash($_POST['wachtwoord'], PASSWORD_DEFAULT);
+    $lQuery = "insert into Users(Naam, Achternaam, Email, Wachtwoord) values ('" . $_POST['voornaam'] . "','" . $_POST['achternaam'] . "','" . $_POST['email'] . "','" . $hashwachtwoord . "')";
+    $conn->query($lQuery);
+    deliver_response($_POST['format'], $response);
+
 }
 
-// --- login
-if (strcasecmp($_GET['m'], 'login') == 0) {
 
-    if (!$conn) {
-        $response['code'] = 0;
-        $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-        $response['data'] = mysqli_connect_error();
+function setMeterstand($conn,$api_response_code)
+{
+    $response['code'] = 0;
+    $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
+    $lQuery = "insert into Gegevens(Meterstand, datum) values ('" . $_POST['gegeven'] . "','" . $_POST['datum'] . "')";
+    $conn->query($lQuery);
+    deliver_response($_POST['format'], $response);
+}
 
+
+function getGegevens($conn,$api_response_code)
+{
+
+    $response['code'] = 0;
+    $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
+    $lQuery = "select * FROM Gegevens";
+    $result = $conn->query($lQuery);
+    $rows = array();
+    if (!$result) {
+        $response['data'] = "db error";
     } else {
-        $response['code'] = 0;
+
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+
+        $response['code'] = 1;
         $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-        // de login nakijken
-        // @FIXME : nakijken of hier niets moet gedaan worden met deze input : in welk formaat is dit?
-        // vooral met speciale tekens zoals in Björn moet ik opletten (op deze server :-/)
-        $lQuery = "select Wachtwoord FROM Users where Email like '" . $_POST['name'] . "' and Wachtwoord like '" . $_POST['password'] . "'";
-        $result = $conn -> query($lQuery);
-        $rows = array();
-        if (!$result) {
-            $response['data'] = "db error";
-        } else {
+        $response['data'] = $rows;
 
-            while ($row = $result -> fetch_assoc()) {
-                $rows[] = $row;
-            }
+    }
+    deliver_response($_POST['format'], $response);
+}
+
+
+function login($conn,$api_response_code)
+{
+    $lQuery = "select Wachtwoord FROM Users where Email = '" . $_POST['naam'] . "'";
+    $ww = $_POST['password'];
+
+    $result = $conn->query($lQuery);
+    $rows = array();
+    if (!$result) {
+        $response['code'] = 4;
+        $response['data'] = "db error";
+    } else {
+        if (password_verify($ww, $result)) {
+
             if (count($rows) > 0) {
-                if(password_verify('random', $result)){
-
 
                 $response['code'] = 1;
                 $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-                $response['data'] = $rows[0];
-            }
-            else{
-                $response['code'] = "4";
-                $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-                $response['data'] = $api_response_code[$response['code']]['Message'];
-            }
+                $response['data'] = $result;
             } else {
                 $response['code'] = "4";
                 $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
                 $response['data'] = $api_response_code[$response['code']]['Message'];
             }
+
         }
     }
+    deliver_response($_POST['format'], $response);
+
 }
 
-
-
-// gegevenslijst
-if (strcasecmp($_GET['m'], 'getGegevens') == 0) {
-
-    if (!$conn) {
-        $response['code'] = 0;
-        $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-        $response['data'] = mysqli_connect_error();
-
-    } else {
-        $response['code'] = 0;
-        $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-        // de login nakijken
-        // @FIXME : nakijken of hier niets moet gedaan worden met deze input : in welk formaat is dit?
-        // vooral met speciale tekens zoals in Björn moet ik opletten (op deze server :-/)
-        $lQuery = "select * FROM Gegevens";
-        $result = $conn -> query($lQuery);
-        $rows = array();
-        if (!$result) {
-            $response['data'] = "db error";
-        } else {
-
-            while ($row = $result -> fetch_assoc()) {
-                $rows[] = $row;
-            }
-            
-            $response['code'] = 1;
-            $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-            $response['data'] = $rows;
-           
-        }
-    }
-}
-
-if (strcasecmp($_GET['m'], 'setMeterstand') == 0) {
-
-    if (!$conn) {
-        $response['code'] = 0;
-        $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-        $response['data'] = mysqli_connect_error();
-
-    } else {
-        
-        $response['code'] = 0;
-        $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-        // de login nakijken
-        // @FIXME : nakijken of hier niets moet gedaan worden met deze input : in welk formaat is dit?
-        // vooral met speciale tekens zoals in Björn moet ik opletten (op deze server :-/)
-        $lQuery = "insert into Gegevens(Meterstand, datum) values ('" . $_POST['gegeven'] . "','" . $_POST['datum'] . "')";
-        $conn -> query($lQuery);
-            
-    }
-}
-if (strcasecmp($_GET['m'], 'NieuweGebruiker') == 0) {
-
-    if (!$conn) {
-        $response['code'] = 0;
-        $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-        $response['data'] = mysqli_connect_error();
-
-    } else {
-        
-        $response['code'] = 1;
-        $response['status'] = $api_response_code[$response['code']]['HTTP Response'];
-        $hashwachtwoord = password_hash($_POST['wachtwoord'] , PASSWORD_DEFAULT, array(
-            'salt' => 'random',
-            'cost' => 10
-            ));
-        $lQuery = "insert into Users(Naam, Achternaam, Email, Wachtwoord) values ('" . $_POST['voornaam'] . "','" . $_POST['achternaam'] . "','" . $_POST['email'] . "','" . $hashwachtwoord . "')";
-        $conn -> query($lQuery);
-            
-    }
-}
-
-// --- Step 3.99: close the DB connection
 mysqli_close($conn);
 
-// --- Step 4: Deliver Response
 
-// Return Response to browser
-deliver_response($_POST['format'], $response);
 ?>

@@ -1,91 +1,111 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="app" ng-csp>
+<html lang="en" ng-app="app">
 <head>
     <meta charset="utf-8" />
-
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,700italic,500italic' rel='stylesheet' type='text/css'>
+    <title>Meterstand </title>
 
-    <!-- JS dependencies (order matters!) -->
-    <script src="scripts/platformOverrides.js"></script>
+    <script src="lib/onsenui/js/onsenui.js"></script>
+
+    <link rel="stylesheet" href="lib/onsenui/css/onsenui.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css" type="text/css" media="all" />
+
+    <script src="lib/onsenui/js/onsenui.js"></script>
     <script src="lib/angular/angular.js"></script>
-    <script src="lib/onsen/js/onsenui.js"></script>
+    <script src="lib/onsenui/js/angular-onsenui.js"></script>
     <script src="lib/jquery/jquery-2.1.1.min.js"></script>
-
-    <!-- CSS dependencies -->
-    <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
-    <link rel="stylesheet" href="lib/onsen/css/onsen-css-components-sunshine-theme.css" />
-    <link rel="stylesheet" href="login.css">
-
-    <!-- CSP support mode (required for Windows Universal apps) -->
-    <link rel="stylesheet" href="lib/angular/angular-csp.css" />
-
-
-    <!-- --------------- Script--------------- -->
+    <script src="app.js"></script>
 
     <script src="scripts/apiInteractie.js"></script>
-    <title>Onsen UI Sliding Menu</title>
-
-    <script>
-        ons.bootstrap();
-    </script>
-
-    <script>
-        angular.module('app', ['onsen']);
-    </script>
 
 </head>
 
 <body>
-<!-- Cordova reference -->
-<script src="cordova.js"></script>
-<script src="scripts/index.js"></script>
+  <!-- Cordova reference -->
+  <script src="cordova.js"></script>
+  <!-- -->
+<ons-navigator animation="slide" var="app.navi">
+    <ons-page modifier="material" ng-controller="LoginController as login">
+    <div class="navigation-bar navigation-bar--material">
+      <div class="navigation-bar__center navigation-bar--material__center">Log In</div>
+    <div class="navigation-bar__right navigation-bar--material__right">
+      <span class="toolbar-button toolbar-button--material">
+    <i class="zmdi zmdi-close"></i>
+  </span>
 
-<ons-navigator title="Navigator" var="myNavigator">
-  <ons-page>
-  <ons-toolbar>
-        <div class="center">Log In</div>
-        <div class="right"><ons-toolbar-button>Close</ons-toolbar-button></div>
-  </ons-toolbar>
-    <div style="text-align: center">
-      <br>
-        <div style="padding: 20px 15px">
-        <input id="login" type="email" class="text-input--underbar" placeholder="Email" value="">
-        <input id="pwd" type="password" class="text-input--underbar" placeholder="Password" value="" required="required">
-        <br><br>
-     
-        <ons-button modifier="large--cta" class="login-button" onclick="getApiGebruiker()">Log In</ons-button>
-        </div>
-        
-      <ons-button modifier="quiet" class="forgot-password" onclick="myNavigator.pushPage('registratie.html', {animation : 'slide' } )">No account? Register here!</ons-button>
     </div>
-  </ons-page>
-</ons-navigator>
+  </div>
+    <div style="text-align: center">
+ <br>
+ <div style="margin: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.2); background-color: white; padding: 10px;">
 
-<ons-template id="registratie.html">
-  <ons-page>
-    <ons-toolbar>
-      <div class="left">
-        <ons-back-button>Back</ons-back-button>
+        <div>
+
+          <div style="padding: 12px 0;">
+            <i class="zmdi zmdi-email zmdi-hc-fw" style="font-size: 20px; opacity: 0.8;"></i>
+            <input class="text-input--material" placeholder="Email address" type="email" required style="margin-left: 4px; width: 230px;" id="login">
+          </div>
+
+          <div style="padding: 12px 0;">
+            <i class="zmdi zmdi-lock zmdi-hc-fw" style="font-size: 20px; opacity: 0.8;"></i>
+            <input class="text-input--material" placeholder="Password" type="password" required style="margin-left: 4px; width: 230px;" id="pwd">
+          </div>
+
+          <div style="padding: 10px 0 4px 0; text-align: right">
+            <button class="button button--material" onclick="getApiGebruiker()">Aanmelden</button>
+          </div>
+        </div>
+
       </div>
-      <div class="center">Sign up</div>
-    </ons-toolbar>
+
+ <ons-button modifier="quiet" class="forgot-password" ng-click="app.navi.pushPage('registratie.html');">Nog geen account? klik hier</ons-button>
+</div>
+  </ons-page>
+  </ons-navigator>
+  <ons-template id="registratie.html">
+  <ons-page modifier="material" ng-controller="LoginController as login">
+    <div class="navigation-bar navigation-bar--material">
+        <div class="navigation-bar__left navigation-bar--material__left">
+          <span class="toolbar-button toolbar-button--material" ng-click="app.navi.popPage();">
+            <i class="zmdi zmdi-arrow-left"></i>
+          </span>
+        </div>
+        <div class="navigation-bar__center navigation-bar--material__center">Registreren</div>
+      </div>
 
     <div style="padding: 20px 15px">
         <br />
-        
-        <input type="text" class="text-input text-input--underbar" placeholder="First name" value="" id="voornaam">
-        <input type="text" class="text-input text-input--underbar" placeholder="Last name" value="" id="achternaam">
-        <input type="text" class="text-input--underbar" placeholder="Email" value="" id="email">
-        <input type="password" class="text-input--underbar" placeholder="Password" value="" id="wachtwoord">
+
+
+ <div style="margin: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.2); background-color: white; padding: 10px;">
+
+   <div style="padding: 12px 0;">
+     <input class="text-input--material" placeholder="Voornaam" type="text" required style="margin-left: 4px; width: 230px;"  id="voornaam" value="">
+   </div>
+   <div style="padding: 12px 0;">
+     <input class="text-input--material" placeholder="Achternaam" type="text" required style="margin-left: 4px; width: 230px;"  id="achternaam" value="">
+   </div>
+   <div style="padding: 12px 0;">
+     <input class="text-input--material" placeholder="E-mail" type="email" required style="margin-left: 4px; width: 230px;"  id="email" value="">
+   </div>
+   <div style="padding: 12px 0;">
+     <input class="text-input--material" placeholder="Wachtwoord" type="password" required style="margin-left: 4px; width: 230px;"  id="wachtwoord" value="">
+   </div>
+
         <br><br>
-            
-        <ons-button modifier="large--cta" class="login-button" onclick="NieuweGebruiker()">Sign up</ons-button>
-        <span id="notif"></span>
-        <br><br>
-            
+        <div style="padding: 10px 0 4px 0; text-align: center">
+          <button class="button button--material" onclick="NieuweGebruiker()">Registreren</button>
+        </div>
+
+      </div>
     </div>
   </ons-page>
 </ons-template>
+
+
+
 </body>
 </html>

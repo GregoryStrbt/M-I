@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="app" ng-csp>
+<html lang="en" ng-app="app">
 <head>
     <meta charset="utf-8" />
 
@@ -7,226 +7,84 @@
     <meta name="mobile-web-app-capable" content="yes" />
 
     <!-- JS dependencies (order matters!) -->
-    <script src="scripts/platformOverrides.js"></script>
+    <script src="lib/onsenui/js/onsenui.js"></script>
     <script src="lib/angular/angular.js"></script>
-    <script src="lib/onsen/js/onsenui.js"></script>
+    <script src="lib/onsenui/js/angular-onsenui.js"></script>
     <script src="lib/jquery/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="lib/fusioncharts/js/fusioncharts.js"></script>
-    <script type="text/javascript" src="lib/fusioncharts/js/themes/fusioncharts.theme.fint.js"></script>
-  
-    <!-- CSS dependencies -->
-    <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
-    <link rel="stylesheet" href="lib/onsen/css/onsen-css-components-sunshine-theme.css" />
-    <link rel="stylesheet" href="login.css">
+    <script src="app.js"></script>
 
+    <!-- CSS dependencies -->
+    <link rel="stylesheet" href="lib/onsenui/css/onsenui.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css" type="text/css" media="all" />
 
     <!-- CSP support mode (required for Windows Universal apps) -->
     <link rel="stylesheet" href="lib/angular/angular-csp.css" />
-
+    <script src="scripts/apiInteractie.js"></script>
 
     <!-- --------------- Script--------------- -->
 
-    <script src="scripts/apiInteractie.js"></script>
-    <title>Onsen UI Sliding Menu</title>
-
-    <script>
-        angular.module('app', ['onsen']);
-
-        $(document).on('swipeleft', '#detect-area', function() {
-            console.log('Swipe left is detected.');
-            window.location.replace('login.html');
-        })
-    </script>
+    <title>Overzicht Gasapp</title>
 
 
-    <script type="text/javascript">
-        FusionCharts.ready(function(){
-            var revenueChart = new FusionCharts({
-                "type": "column2d",
-                "renderAt": "chartContainer",
-                "width": "500",
-                "height": "300",
-                "dataFormat": "json",
-                "dataSource":  {
-                    "chart": {
-                        "caption": "Monthly revenue for last year",
-                        "subCaption": "Harry's SuperMart",
-                        "xAxisName": "Month",
-                        "yAxisName": "Revenues (In USD)",
-                        "theme": "fint"
-                    },
-                    "data": [
-                        {
-                            "label": "Jan",
-                            "value": "420000"
-                        },
-                        {
-                            "label": "Feb",
-                            "value": "810000"
-                        },
-                        {
-                            "label": "Mar",
-                            "value": "720000"
-                        },
-                        {
-                            "label": "Apr",
-                            "value": "550000"
-                        },
-                        {
-                            "label": "May",
-                            "value": "910000"
-                        },
-                        {
-                            "label": "Jun",
-                            "value": "510000"
-                        },
-                        {
-                            "label": "Jul",
-                            "value": "680000"
-                        },
-                        {
-                            "label": "Aug",
-                            "value": "620000"
-                        },
-                        {
-                            "label": "Sep",
-                            "value": "610000"
-                        },
-                        {
-                            "label": "Oct",
-                            "value": "490000"
-                        },
-                        {
-                            "label": "Nov",
-                            "value": "900000"
-                        },
-                        {
-                            "label": "Dec",
-                            "value": "730000"
-                        }
-                    ]
-                }
-
-            });
-            revenueChart.render();
-        })
-    </script>
-    <style>
-        .page--menu-page__background {
-            background-color: #333;
-        }
-
-        .page--menu-page__content {
-            color: white;
-        }
-
-        .menu-close,
-        .menu-close > .toolbar-button {
-            color: #999;
-        }
-
-        .menu-list,
-        .menu-item:first-child,
-        .menu-item:last-child,
-        .menu-item {
-            background-color: transparent;
-            background-image: none !important;
-            border-color: transparent;
-            color: #fff;
-        }
-
-        .menu-item {
-            padding: 0 0 0 20px;
-            line-height: 52px;
-            height: 52px;
-            text-shadow: rgba(0, 0, 0, 0.4) 0px 1px 0px;
-        }
-
-            .menu-item:active {
-                background-color: rgba(255, 255, 255, 0.1);
-            }
-
-        .menu-notification {
-            display: inline-block;
-            margin-top: 12px;
-            font-size: 14px;
-            height: 16px;
-            line-height: 16px;
-            min-width: 16px;
-            font-weight: 600;
-        }
-
-        .bottom-menu-list,
-        .bottom-menu-item:first-child,
-        .bottom-menu-item:last-child,
-        .bottom-menu-item {
-            border-color: #393939;
-            background-color: transparent;
-            background-image: none !important;
-            color: #ccc;
-        }
-
-            .bottom-menu-item:active {
-                background-color: rgba(255, 255, 255, 0.1);
-            }
-    </style>
 
 </head>
 
 <body>
     <!-- Cordova reference -->
     <script src="cordova.js"></script>
-    <script src="scripts/index.js"></script>
     <!-- -->
+<ons-navigator animation="slide" var="app.navi">
+    <ons-splitter>
+      <ons-splitter-side var="menu" side="left" width="80%" collapse swipeable>
+        <ons-page modifier="material">
+          <ons-list modifier="material">
+            <ons-list-header modifier="material">Menu</ons-list-header>
+            <ons-list-item modifier="material" ng-click="app.navi.pushPage('home.html');">
+              Home
+            </ons-list-item>
+            <ons-list-item modifier="material" ng-click="app.navi.pushPage('data.html');">
+            Gasgegevens
+            </ons-list-item>
+            <ons-list-item modifier="material" ng-click="app.navi.pushPage('geschiedenis.html');">
+            Overzicht
+            </ons-list-item>
+            <ons-list-item modifier="material" ng-click="app.navi.pushPage('help.html');">
+              Instellingen
+            </ons-list-item>
+          </ons-list>
 
-<ons-tabbar>
-    <ons-tab page="thuis.html" label="Home" icon="ion-home" active="true"></ons-tab>
-    <ons-tab page="geschiedenis.html" label="Geschiedenis" icon="ion-compass"></ons-tab>
-    <ons-tab page="help.html" label="Help" icon="ion-ios-help"></ons-tab>
-    <ons-tab page="settings.html" label="Settings" icon="ion-ios-cog"></ons-tab>
-</ons-tabbar>
-
-    <ons-template id="thuis.html">
-        <ons-page>
-            <ons-toolbar>
-
-                <div class="center">Gas-O-Meter</div>
-            </ons-toolbar>
-            <br>
-            <p>Meterstand ingeven:</p>
-            
-            <div style="padding: 20px 15px; text-align: center">
-        <input id="meterstand" type="number" class="text-input--underbar" placeholder="Meterstand" value="" required="required">
-        <input id="datum" type="date" class="text-input--underbar" placeholder="Datum" value="" required="required">
-        <br><br>
-                <div class="vspc form-row" style="padding: 20px 15px">
-                    <ons-button modifier="large--cta" class="login-button" onclick="setGegevens()">Geef meterstand in</ons-button>
-                </div>
-
-
-
-        </div>
-
-
-            </div>
-            <div id="chartContainer">FusionCharts XT will load here!</div>
         </ons-page>
-    </ons-template>
+      </ons-splitter-side>
+      <ons-splitter-content page="home.html"></ons-splitter-content>
+    </ons-splitter>
+  </ons-navigator>
 
+      <ons-template id="home.html">
+        <ons-page modifier="material" ng-controller="LoginController as login">
+          <ons-toolbar modifier="material">
+            <div class="left">
+              <ons-toolbar-button ng-click="menu.open()" modifier="material">
+                <ons-icon icon="md-menu"></ons-icon>
+              </ons-toolbar-button>
+            </div>
+            <div class="center">Gas - Applicatie</div>
+          </ons-toolbar>
+        </ons-template>
 
-<!--
    <ons-template id="data.html">
-        <ons-page>
-            <ons-toolbar>
-
-                <div class="center">Page 2</div>
-            </ons-toolbar>
+    <ons-page modifier="material" ng-controller="LoginController as login">
+      <ons-toolbar modifier="material">
+        <div class="left">
+          <ons-toolbar-button ng-click="menu.open()" modifier="material">
+            <ons-icon icon="md-menu"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+        <div class="center">Gas - Data</div>
+      </ons-toolbar>
 
 
             <ons-row style="margin-top: 100px; text-align: center;">
                 <ons-col>
-
-
                     <div id="alert" style="color:red">
 
                     </div><br>
@@ -277,9 +135,9 @@
             </table>
 
 
-            
-            
-            
+
+
+
         </ons-page>
     </ons-template>
 

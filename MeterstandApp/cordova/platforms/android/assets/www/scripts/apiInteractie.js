@@ -12,7 +12,7 @@ var apiAddress = "http://www.mobiel.jengarobot.be/mi3p3/api.php?";
 function getApiGebruiker(){
     // een ONVEILIGE manier om gebruikersgegevens te testen
     var data = {};
-    data.name = $("#login").val();
+    data.naam = $("#login").val();
     data.password = $("#pwd").val();
     data.format = "json";
 
@@ -25,25 +25,7 @@ function getApiGebruiker(){
         data : data,
         withCredentials : false,
         success : function(responseData, textStatus, jqXHR) {
-            var list = responseData.data;
-            //JSON.parse(responseData);
-            console.log("resultlist :" + list + " length:" + list.length);
-
-            if (Object.keys(list).length > 0) {
-                // list bevat minstens 1 property met waarde
-
-                list.ID = parseInt(list.ID);
-                // alles wat via json komt, is standaard een string of een object.
-                // hier is het omzetten naar een int wel niet nodig, omdat we er niet met gaan rekenen
-                console.log("Gebruikersgevens ok : ID = " + list.ID);
-                alerter("Gebruikersgevens ok : ID = " + list.ID);
                 window.location.replace('home.html');
-
-            } else {
-                console.log("Login failed : 0 results");
-                alerter("Login failed : this login/password combination does not exist");
-            }
-
         },
         error : function(responseData, textStatus, errorThrown) {
             console.log("Could not login " + errorThrown);
@@ -53,7 +35,7 @@ function getApiGebruiker(){
 }
 function uitloggen(){
 
-    window.location.replace('login.html');
+    window.location.replace('index.html');
 }
 
 
@@ -160,7 +142,7 @@ function getApiTijd(){
     // test de api
     $.ajax({
         type : "POST",
-        url : apiAddress+"m=getTime",
+        url : apiAddress+"m=hello",
         crossDomain : true,
         data : data,
         withCredentials : false,
